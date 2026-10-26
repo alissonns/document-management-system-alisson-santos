@@ -18,25 +18,28 @@ export default function App() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    let isCurrent = true;
+    const controller = new AbortController();
     setIsLoading(true);
     setLoadError('');
+    setDocuments([]);
 
-    listDocuments(owner)
+    listDocuments(owner, { signal: controller.signal })
       .then((items) => {
-        if (isCurrent) setDocuments(items);
+        if (!controller.signal.aborted) setDocuments(items);
       })
       .catch((error) => {
-        if (isCurrent) setLoadError(error.message);
+        if (!controller.signal.aborted) setLoadError(error.message);
       })
       .finally(() => {
-        if (isCurrent) setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       });
 
-    return () => {
-      isCurrent = false;
-    };
+    return () => controller.abort();
   }, [owner, refreshKey]);
+
+  function refreshDocuments() {
+    setRefreshKey((current) => current + 1);
+  }
 
   function saveOwner(event) {
     event.preventDefault();
@@ -86,8 +89,9 @@ export default function App() {
         </div>
 
         <UploadComponent
+          key={owner}
           owner={owner}
-          onUploaded={() => setRefreshKey((current) => current + 1)}
+          onUploaded={refreshDocuments}
         />
 
         <section className="documents-section" aria-labelledby="documents-title">
@@ -96,18 +100,19 @@ export default function App() {
             <button
               type="button"
               className="text-button"
-              onClick={() => setRefreshKey((current) => current + 1)}
+              onClick={refreshDocuments}
               disabled={isLoading}
             >
               Atualizar lista
             </button>
           </div>
           <DocumentList
+            key={owner}
             documents={documents}
             owner={owner}
             isLoading={isLoading}
             error={loadError}
-            onRetry={() => setRefreshKey((current) => current + 1)}
+            onRetry={refreshDocuments}
           />
         </section>
       </section>

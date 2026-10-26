@@ -25,10 +25,17 @@ export function DownloadButton({ document, owner }) {
 
   return (
     <span className="download-control">
-      <button type="button" className="download-button" onClick={handleDownload} disabled={isDownloading}>
+      <button
+        type="button"
+        className="download-button"
+        onClick={handleDownload}
+        disabled={isDownloading}
+        aria-label={`Baixar ${document.originalName}`}
+        aria-busy={isDownloading}
+      >
         {isDownloading ? 'Baixando...' : 'Baixar'}
       </button>
-      {error && <span className="download-error" role="status">{error}</span>}
+      {error && <span className="download-error" role="alert">{error}</span>}
     </span>
   );
 }

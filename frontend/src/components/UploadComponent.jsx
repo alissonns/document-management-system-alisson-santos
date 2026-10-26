@@ -34,7 +34,7 @@ export function UploadComponent({ owner, onUploaded }) {
   }
 
   return (
-    <form className="upload-panel" onSubmit={handleSubmit}>
+    <form className="upload-panel" onSubmit={handleSubmit} aria-busy={isUploading}>
       <div className="upload-copy">
         <span className="upload-mark" aria-hidden="true">+</span>
         <div>
@@ -48,6 +48,7 @@ export function UploadComponent({ owner, onUploaded }) {
           <input
             id="document-file"
             type="file"
+            disabled={isUploading}
             onChange={(event) => {
               setFile(event.target.files?.[0] || null);
               setMessage('');
