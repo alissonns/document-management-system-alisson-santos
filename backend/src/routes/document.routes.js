@@ -2,7 +2,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const multer = require('multer');
 const { maxFileSize, storageDirectory } = require('../config');
-const documentController = require('../controllers/documentController');
+const documentController = require('../controllers/document.controller');
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {

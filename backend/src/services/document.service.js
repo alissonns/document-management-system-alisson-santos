@@ -1,6 +1,6 @@
 const { randomUUID } = require('node:crypto');
 const { access } = require('node:fs/promises');
-const documentRepository = require('../repositories/documentRepository');
+const documentRepository = require('../repositories/document.repository');
 
 async function createDocument(file, owner) {
   const document = {
