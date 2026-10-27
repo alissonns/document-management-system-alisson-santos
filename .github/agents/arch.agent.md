@@ -187,7 +187,7 @@ Brief overview of the system and architectural approach
 
 ## Best Practices
 
-1. **Use Mermaid syntax** for all diagrams to ensure they render in Markdown
+1. **Use Mermaid syntax** for all diagrams to ensure they render in  Markdown
 2. **Be comprehensive** but also **clear and concise**
 3. **Focus on clarity** over complexity
 4. **Provide context** for all architectural decisions

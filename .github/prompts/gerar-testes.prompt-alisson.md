@@ -1,5 +1,5 @@
 ---
-description: Gera testes com node:test para um módulo do backend.
+description: Gera testes com node:test para um módulo do  backend.
 name: gerar-testes
 argument-hint: caminho do modulo (ex. backend/src/services/documents.service.js)
 agent: agent
