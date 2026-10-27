@@ -1,6 +1,9 @@
 const { randomUUID } = require('node:crypto');
-const { access } = require('node:fs/promises');
 const documentRepository = require('../repositories/document.repository');
+
+function toPublicDocument({ storageName, ...document }) {
+  return document;
+}
 
 async function createDocument(file, owner) {
   const document = {
@@ -12,26 +15,21 @@ async function createDocument(file, owner) {
     storageName: file.filename,
   };
 
-  return documentRepository.save(document);
+  return toPublicDocument(documentRepository.save(document));
 }
 
 function listDocuments(owner) {
-  return documentRepository.findByOwner(owner);
+  return documentRepository.findByOwner(owner).map(toPublicDocument);
 }
 
 async function getDownload(owner, id) {
   const document = documentRepository.findById(id);
   if (!document || document.owner !== owner) return null;
 
-  const filePath = documentRepository.getStoragePath(document.storageName);
-  try {
-    await access(filePath);
-  } catch (error) {
-    if (error.code === 'ENOENT') return null;
-    throw error;
-  }
+  const filePath = await documentRepository.getAvailableStoragePath(document.storageName);
+  if (!filePath) return null;
 
-  return { document, filePath };
+  return { document: toPublicDocument(document), filePath };
 }
 
 module.exports = { createDocument, getDownload, listDocuments };

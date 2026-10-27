@@ -16,8 +16,7 @@ async function upload(req, res) {
   }
 
   const document = await documentService.createDocument(req.file, req.owner);
-  const { storageName, ...publicDocument } = document;
-  return res.status(201).json(publicDocument);
+  return res.status(201).json(document);
 }
 
 function list(req, res) {

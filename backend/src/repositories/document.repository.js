@@ -1,4 +1,5 @@
 const path = require('node:path');
+const { access } = require('node:fs/promises');
 const { storageDirectory } = require('../config');
 
 const documents = new Map();
@@ -11,7 +12,7 @@ function save(document) {
 function findByOwner(owner) {
   return [...documents.values()]
     .filter((document) => document.owner === owner)
-    .map(({ storageName, ...document }) => ({ ...document }));
+    .map((document) => ({ ...document }));
 }
 
 function findById(id) {
@@ -23,4 +24,15 @@ function getStoragePath(storageName) {
   return path.join(storageDirectory, storageName);
 }
 
-module.exports = { findById, findByOwner, getStoragePath, save };
+async function getAvailableStoragePath(storageName) {
+  const filePath = getStoragePath(storageName);
+  try {
+    await access(filePath);
+    return filePath;
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+module.exports = { findById, findByOwner, getAvailableStoragePath, save };
